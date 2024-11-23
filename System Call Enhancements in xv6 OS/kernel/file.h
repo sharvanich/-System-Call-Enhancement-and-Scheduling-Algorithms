@@ -4,6 +4,7 @@ struct file {
   char readable;
   char writable;
   struct pipe *pipe; // FD_PIPE
+  struct pipe *pipetagged;
   struct inode *ip;  // FD_INODE and FD_DEVICE
   uint off;          // FD_INODE
   short major;       // FD_DEVICE
