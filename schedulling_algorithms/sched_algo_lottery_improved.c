@@ -4,28 +4,44 @@
 #include <time.h>
 
 struct process {
-    int pid, tt, at, bt, ct, tat, wt, rt, remaining_time;
-    bool completed;
-    struct process *link;
+    int pid;
+    int tt;               
+    int at;              
+    int bt;               
+    int pr;              
+    int ct;              
+    int tat;             
+    int wt;             
+    int rt;              
+    int remaining_time;   
+    bool completed;      
+    struct process *link; 
 };
 
 struct process *head = NULL;
 
 struct process* create_process(struct process *head) {
-    int pid, tickets, at, bt;
-    printf("Enter Process ID, Tickets, Arrival Time, Burst Time: ");
-    scanf("%d %d %d %d", &pid, &tickets, &at, &bt);
+    int v1, v2, v3, v4;
+    printf("Enter process id: ");
+    scanf("%d", &v1);
+    printf("Enter no. of Tickets: ");
+    scanf("%d", &v2);
+    printf("Enter arrival time: ");
+    scanf("%d", &v3);
+    printf("Enter burst time: ");
+    scanf("%d", &v4);
 
     struct process *new_process = (struct process*)malloc(sizeof(struct process));
-    new_process->pid = pid;
-    new_process->tt = tickets;
-    new_process->at = at;
-    new_process->bt = bt;
+    new_process->pid = v1;
+    new_process->tt = v2;
+    new_process->at = v3;
+    new_process->bt = v4;
+    new_process->pr = -1;  
     new_process->ct = -1;
     new_process->tat = -1;
     new_process->wt = -1;
     new_process->rt = -1;
-    new_process->remaining_time = bt;
+    new_process->remaining_time = v4;
     new_process->completed = false;
     new_process->link = NULL;
 
@@ -39,6 +55,16 @@ struct process* create_process(struct process *head) {
         temp->link = new_process;
     }
     return head;
+}
+
+void assign_processors(int processors) {
+    struct process *temp = head;
+    int i = 0;
+    while (temp != NULL) {
+        temp->pr = i % processors; 
+        temp = temp->link;
+        i++;
+    }
 }
 
 int calculate_total_tickets(struct process *head, int current_time) {
@@ -83,13 +109,12 @@ void calculate_metrics(struct process *head) {
 }
 
 void print_linkedlist(struct process *head) {
-    printf("PID\tTT\tAT\tBT\tCT\tTAT\tWT\tRT\n");
-    printf("---------------------------------------------------\n");
+    printf("PID\tTT\tAT\tBT\tPR\tCT\tTAT\tWT\tRT\n");
     struct process *temp = head;
     while (temp != NULL) {
-        printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+        printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
                temp->pid, temp->tt, temp->at, temp->bt,
-               temp->ct, temp->tat, temp->wt, temp->rt);
+               temp->pr, temp->ct, temp->tat, temp->wt, temp->rt);
         temp = temp->link;
     }
 }
@@ -130,6 +155,8 @@ int main() {
         head = create_process(head);
     }
 
+    assign_processors(processors);
+
     int active_processes = processes, round = 1, current_time = 0;
 
     while (active_processes > 0) {
@@ -143,7 +170,7 @@ int main() {
             continue;
         }
 
-        printf("Processor 1 is running Process %d\n", selected_process->pid);
+        printf("Processor %d is running Process %d\n", selected_process->pr + 1, selected_process->pid);
 
         if (selected_process->rt == -1) {
             selected_process->rt = current_time - selected_process->at;
