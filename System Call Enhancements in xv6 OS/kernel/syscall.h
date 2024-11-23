@@ -25,3 +25,5 @@
 #define SYS_cpuutilization 24
 #define SYS_count_zombies 25 // Assign an unused syscall number
 #define SYS_pipetagged 26
+#define SYS_pipetagged_write 27
+#define SYS_pipetagged_read 28
