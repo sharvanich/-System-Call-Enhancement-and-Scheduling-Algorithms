@@ -105,6 +105,8 @@ extern uint64 sys_close(void);
 extern unit64 sys_setpriority(void);
 extern int sys_count_zombies(void);
 extern unit64 sys_pipetagged(void);
+extern uint64 sys_pipetagged_write(void);
+extern uint64 sys_pipetagged_read(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -135,6 +137,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_count_zombies] sys_count_zombies,
 [SYS_cpuutilization] sys_cpuutilization,
 [SYS_pipetagged] sys_pipetagged,
+[SYS_pipetagged_write] = sys_pipe_tagged_write, 
+[SYS_pipetagged_read] = sys_pipe_tagged_read, 
 };
 
 void
