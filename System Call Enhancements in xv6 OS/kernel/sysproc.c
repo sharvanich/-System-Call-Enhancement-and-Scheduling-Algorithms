@@ -100,12 +100,12 @@ unit64
 sys_setpriority(void)
 {
   int pid,priority;
-argint(0,&pid);
-argint(1,&priority);
-if(pid<0 || priority <0)
-{
-   return -1;
-}
+  argint(0,&pid);
+  argint(1,&priority);
+  if(pid<0 || priority <0)
+     {
+          return -1;
+     }
 struct proc *p;
 for(p=proc;p<&proc[NPROC];p++){
   if(p->pid == pid)
