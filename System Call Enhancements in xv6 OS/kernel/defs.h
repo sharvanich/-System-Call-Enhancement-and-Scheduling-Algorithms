@@ -76,6 +76,13 @@ void            pipeclose(struct pipe*, int);
 int             piperead(struct pipe*, uint64, int);
 int             pipewrite(struct pipe*, uint64, int);
 
+// sysfile system calls
+
+uint64 sys_pipetagged(void);           // Add this line for tagged pipe creation
+uint64 sys_pipetagged_write(void);     // Add this line for tagged pipe writing
+uint64 sys_pipetagged_read(void);      // Add this line for tagged pipe reading
+
+
 // printf.c
 int            printf(char*, ...) __attribute__ ((format (printf, 1, 2)));
 void            panic(char*) __attribute__((noreturn));
