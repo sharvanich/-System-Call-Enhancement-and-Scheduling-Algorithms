@@ -37,4 +37,8 @@ entry("getpid");
 entry("sbrk");
 entry("sleep");
 entry("uptime");
-entry("zombie_count")
+entry("zombie_count");
+entry("setpriority");
+entry("pipetagged");
+entry("pipetagged_write");
+entry("pipetagged_read");
