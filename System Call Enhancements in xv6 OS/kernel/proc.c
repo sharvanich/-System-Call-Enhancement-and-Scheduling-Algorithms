@@ -738,3 +738,20 @@ void scheduler(void) {
         }
     }
 }
+
+int
+sys_count_zombies(void)
+{
+    struct proc *p;
+    int count = 0;
+
+    acquire(&ptable.lock); // Lock the process table
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+        if (p->state == ZOMBIE) {
+            count++;
+        }
+    }
+    release(&ptable.lock); // Release the lock
+
+    return count; // Return the count of zombie processes
+}
