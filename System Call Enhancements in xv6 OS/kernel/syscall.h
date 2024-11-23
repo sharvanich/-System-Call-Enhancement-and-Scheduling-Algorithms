@@ -24,3 +24,4 @@
 #define SYS_setpriority 23
 #define SYS_cpuutilization 24
 #define SYS_count_zombies 25 // Assign an unused syscall number
+#define SYS_pipetagged 26
