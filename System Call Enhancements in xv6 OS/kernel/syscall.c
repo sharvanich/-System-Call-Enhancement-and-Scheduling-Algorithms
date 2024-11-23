@@ -132,6 +132,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_setpriority]  sys_setpriority,
 [SYS_count_zombies] sys_count_zombies,
+[SYS_cpuutilization] sys_cpuutilization,
+
 };
 
 void
