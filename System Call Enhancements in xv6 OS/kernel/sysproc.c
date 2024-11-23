@@ -116,4 +116,18 @@ for(p=proc;p<&proc[NPROC];p++){
 }
  return -1;
 }
-uint64 sys_cpuutilization(void);
+uint64 sys_cpuutilization(void){
+uint64 total_time = 0;
+    uint64 idle_time = 0;
+
+    struct proc *p;
+    for (p = proc; p < &proc[NPROC]; p++) {
+        total_time += p->total_time;
+        idle_time += p->idle_time;
+    }
+
+    if (total_time == 0) return 0; 
+
+    uint64 utilization = ((total_time - idle_time) * 100) / total_time; 
+    return utilization;
+}
