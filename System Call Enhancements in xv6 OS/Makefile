@@ -140,7 +140,8 @@ UPROGS=\
 	$U/_wc\
 	$U/_zombie\
 	$U/_testsfork\
-
+	$U/_cpuutilization\
+	$U/_testzombie\
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
 
