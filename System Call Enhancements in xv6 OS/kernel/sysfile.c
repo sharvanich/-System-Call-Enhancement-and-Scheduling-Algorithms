@@ -503,3 +503,96 @@ sys_pipe(void)
   }
   return 0;
 }
+uint64 sys_pipe(void)
+{
+  uint64 fdarray; // user pointer to array of two integers
+  struct file *rf, *wf;
+  int fd0, fd1;
+  struct proc *p = myproc();
+
+  argaddr(0, &fdarray);
+  if(pipealloc(&rf, &wf) < 0)
+    return -1;
+  fd0 = -1;
+  if((fd0 = fdalloc(rf)) < 0 || (fd1 = fdalloc(wf)) < 0){
+    if(fd0 >= 0)
+      p->ofile[fd0] = 0;
+    fileclose(rf);
+    fileclose(wf);
+    return -1;
+  }
+  if(copyout(p->pagetable, fdarray, (char*)&fd0, sizeof(fd0)) < 0 ||
+     copyout(p->pagetable, fdarray+sizeof(fd0), (char *)&fd1, sizeof(fd1)) < 0){
+    p->ofile[fd0] = 0;
+    p->ofile[fd1] = 0;
+    fileclose(rf);
+    fileclose(wf);
+    return -1;
+  }
+  return 0;
+}
+
+// New System Calls for Tagged Pipes
+uint64 sys_pipetagged(void)
+{
+  uint64 fdarray; // user pointer to array of two integers
+  struct file *rf, *wf;
+  int fd0, fd1;
+  struct proc *p = myproc();
+  
+  argaddr(0, &fdarray);
+  if(pipe_tagged_alloc(&rf, &wf) < 0) // Call the new pipe_tagged_alloc function
+    return -1;
+  fd0 = -1;
+  if((fd0 = fdalloc(rf)) < 0 || (fd1 = fdalloc(wf)) < 0){
+    if(fd0 >= 0)
+      p->ofile[fd0] = 0;
+    fileclose(rf);
+    fileclose(wf);
+    return -1;
+  }
+  if(copyout(p->pagetable, fdarray, (char*)&fd0, sizeof(fd0)) < 0 ||
+     copyout(p->pagetable, fdarray+sizeof(fd0), (char *)&fd1, sizeof(fd1)) < 0){
+    p->ofile[fd0] = 0;
+    p->ofile[fd1] = 0;
+    fileclose(rf);
+    fileclose(wf);
+    return -1;
+  }
+  return 0;
+}
+
+// System call to write to a tagged pipe with a specific tag.
+uint64 sys_pipeagged_write(void)
+{
+  struct file *f;
+  uint64 addr;
+  int n, tag;
+
+  argint(2, &n);  // Number of bytes to write
+  argaddr(1, &addr);  // User buffer address
+  argint(3, &tag);  // Tag to be associated with the message
+
+  if(argfd(0, 0, &f) < 0)
+    return -1;
+
+  return pipetagged_write(f->pipe, (const void *)addr, n, tag); // Call the pipe_tagged_write function
+}
+
+// System call to read from a tagged pipe with a specific tag.
+uint64 sys_pipe_tagged_read(void)
+{
+  struct file *f;
+  uint64 addr;
+  int n, tag;
+
+  argint(2, &n);  // Number of bytes to read
+  argaddr(1, &addr);  // User buffer address
+  argint(3, &tag);  // Tag to filter messages
+
+  if(argfd(0, 0, &f) < 0)
+    return -1;
+
+  return pipe_tagged_read(f->pipe, (void *)addr, n, tag);  // Call the pipe_tagged_read function
+}
+
