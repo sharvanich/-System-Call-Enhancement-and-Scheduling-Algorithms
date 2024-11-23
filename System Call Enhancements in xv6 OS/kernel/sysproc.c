@@ -116,3 +116,4 @@ for(p=proc;p<&proc[NPROC];p++){
 }
  return -1;
 }
+uint64 sys_cpuutilization(void);
