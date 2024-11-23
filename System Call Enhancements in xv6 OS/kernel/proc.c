@@ -709,3 +709,32 @@ procdump(void)
     printf("\n");
   }
 }
+
+void scheduler(void) {
+    struct proc *p;
+   p->total_time = 0;
+   p->idle_time = 0;
+    while (1) {
+        intr_on();
+
+        for (p = proc; p < &proc[NPROC]; p++) {
+            if (p->state != RUNNABLE)
+                continue;
+
+            p->total_time += QUANTUM; 
+
+            switchuvm(p);
+            p->state = RUNNING;
+            swtch(&cpu->context, &p->context);
+
+            switchkvm();
+
+        }
+
+        for (p = proc; p < &proc[NPROC]; p++) {
+            if (p->state == SLEEPING) {
+                cpu->idle_time += QUANTUM;
+            }
+        }
+    }
+}
