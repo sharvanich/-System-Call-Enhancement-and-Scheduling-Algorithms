@@ -114,6 +114,8 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16]; 
 int priority;// Process name (debugging)
+uint64 total_time;  
+uint64 idle_time;
 };
 extern struct proc proc[NPROC]; // Process table
 extern struct proc *initproc;   // The initial process
